@@ -6,7 +6,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import setup.EcommerceApp.component.JWTProvider;
+import setup.EcommerceApp.config.JWTProvider;
 import setup.EcommerceApp.dto.LoginRequestDto;
 import setup.EcommerceApp.dto.RegisterRequestDto;
 import setup.EcommerceApp.model.Role;
@@ -17,9 +17,9 @@ import java.time.LocalDateTime;
 
 @Service
 public class AuthService {
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private JWTProvider jwtProvider;
+    private final UserRepository userRepository;
+    private final  PasswordEncoder passwordEncoder;
+    private final JWTProvider jwtProvider;
 
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JWTProvider jwtProvider){
         this.userRepository = userRepository;
@@ -27,7 +27,7 @@ public class AuthService {
         this.jwtProvider = jwtProvider;
     }
     @Transactional
-    private String register(RegisterRequestDto request){
+    public String register(RegisterRequestDto request){
         //Valid password Strength
         if(!isValidPassword(request.getPassword())){
             throw new IllegalArgumentException("Password must be 8 character long and include special characters and numbers");
@@ -45,8 +45,8 @@ public class AuthService {
 
         userRepository.save(user);
 
-        //return jwtProvider.generateToken(user.getEmail());
-        return "token";
+        return jwtProvider.generateToken(user.getEmail());
+
     }
 
     public String login(LoginRequestDto request) {
@@ -57,8 +57,7 @@ public class AuthService {
             throw new BadCredentialsException("Invalid password");
         }
 
-//        return jwtProvider.generateToken(user.getEmail());
-        return "token";
+          return jwtProvider.generateToken(user.getEmail());
     }
     // Password validation utility
     private boolean isValidPassword(String password) {
