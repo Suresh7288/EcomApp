@@ -26,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTest {
 
@@ -49,22 +48,25 @@ class AuthServiceTest {
 
     @Test
     void register_Success() {
-        // Arrange
         RegisterRequestDto request = new RegisterRequestDto();
         request.setName("John Doe");
         request.setEmail("john@example.com");
         request.setPassword("Password@123");
 
-        when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.empty());
         when(passwordEncoder.encode(anyString())).thenReturn("encodedPassword");
-        when(jwtProvider.generateToken(anyString())).thenReturn("dummyToken");
 
-        // Act
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
+            User user = invocation.getArgument(0);
+            user.setId(1L);
+            return user;
+        });
+
+        when(jwtProvider.generateToken("john@example.com")).thenReturn("dummyToken");
+
         String token = authService.register(request);
 
-        // Assert
         assertEquals("dummyToken", token);
-        verify(userRepository, times(1)).save(any(User.class));
     }
 
     @Test

@@ -32,9 +32,9 @@ public class AuthService {
         if(!isValidPassword(request.getPassword())){
             throw new IllegalArgumentException("Password must be 8 character long and include special characters and numbers");
         }
-        if(userRepository.findByEmail(request.getEmail()).isPresent()){
-            throw new IllegalArgumentException(("Email already exist, try with another email"));
-        }
+//        if(userRepository.findByEmail(request.getEmail()).isPresent()){
+//            throw new IllegalArgumentException(("Email already exist, try with another email"));
+//        }
 
         User user = new User();
         user.setName(request.getName());
