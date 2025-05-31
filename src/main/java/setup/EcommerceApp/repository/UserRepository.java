@@ -16,4 +16,5 @@ import java.util.function.Function;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findByEmail(String email);
+
 }

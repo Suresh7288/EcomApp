@@ -39,7 +39,7 @@ public class AuthService {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.CUSTOMER);
         user.setCreatedAt(LocalDateTime.now());
 
@@ -79,5 +79,4 @@ public class AuthService {
             userRepository.save(admin);
         }
     }
-
 }

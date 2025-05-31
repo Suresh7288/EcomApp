@@ -3,6 +3,7 @@ package setup.EcommerceApp.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import setup.EcommerceApp.dto.CartItemDto;
 import setup.EcommerceApp.model.Product;
@@ -21,8 +22,8 @@ public class CartController {
         this.cartService = cartService;
     }
     @PostMapping("/add")
-    public ResponseEntity<String> addCart(@AuthenticationPrincipal User user, @RequestParam Product productId, @RequestParam Integer quantity){
-        cartService.addCart(user,productId, quantity);
+    public ResponseEntity<String> addCart(@AuthenticationPrincipal UserDetails userdetails, @RequestParam Long productId, @RequestParam Integer quantity){
+        cartService.addCart(userdetails,productId, quantity);
         return ResponseEntity.ok("added to cart");
     }
     @GetMapping

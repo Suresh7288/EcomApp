@@ -1,5 +1,6 @@
 package setup.EcommerceApp.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import setup.EcommerceApp.dto.CartItemDto;
@@ -19,7 +20,7 @@ public class OrderService {
     @Autowired
     private CartRepository cartItemRepository;
     @Autowired private OrderRepository orderRepository;
-
+    @Transactional
     public OrderResponseDto placeOrder(User user) {
         List<CartItem> cartItems = cartItemRepository.findByUser(user);
         if (cartItems.isEmpty()) throw new IllegalStateException("Cart is empty");

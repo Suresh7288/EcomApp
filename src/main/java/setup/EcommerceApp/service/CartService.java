@@ -1,5 +1,7 @@
 package setup.EcommerceApp.service;
 
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import setup.EcommerceApp.dto.CartItemDto;
 import setup.EcommerceApp.model.CartItem;
@@ -7,6 +9,7 @@ import setup.EcommerceApp.model.Product;
 import setup.EcommerceApp.model.User;
 import setup.EcommerceApp.repository.CartRepository;
 import setup.EcommerceApp.repository.ProductRepository;
+import setup.EcommerceApp.repository.UserRepository;
 
 import javax.sound.sampled.Port;
 import java.nio.file.AccessDeniedException;
@@ -19,14 +22,18 @@ import java.util.stream.Collectors;
 @Service
 public class CartService {
     private  CartRepository cartRepository;
-    private ProductRepository productRepository;
-    public CartService(CartRepository cartRepository, ProductRepository productRepository){
+    private final ProductRepository productRepository;
+    private final UserRepository userRepository;
+    public CartService(CartRepository cartRepository, UserRepository userRepository, ProductRepository productRepository){
         this.cartRepository=cartRepository;
         this.productRepository = productRepository;
+        this.userRepository=userRepository;
     }
-    public void addCart(User user, Product productId, Integer quantity){
-        assert Objects.requireNonNull(ProductRepository.findById(productId)).isPresent();
-        Product product = ProductRepository.findById(productId).orElseThrow(()-> new NoSuchElementException("Product not found"));
+    public void addCart(UserDetails userdetails, Long productId, Integer quantity){
+        Product product = productRepository.findById(productId).orElseThrow(()-> new NoSuchElementException("Product not found"));
+        User user = userRepository.findByEmail(userdetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
         CartItem cartItem = new CartItem();
         cartItem.setQuantity(quantity);
         cartItem.setUser(user);

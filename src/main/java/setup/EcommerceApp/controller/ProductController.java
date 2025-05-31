@@ -21,6 +21,12 @@ public class ProductController {
     public ResponseEntity<ProductResponseDto> addProduct(@RequestBody ProductRequestDto dto){
         return ResponseEntity.ok(productService.addProduct(dto));
     }
+    @PreAuthorize("hasRole('ADMIN')")
+    @PostMapping("/bulk")
+    public ResponseEntity<List<ProductResponseDto>> addMultipleProducts(@RequestBody List<ProductRequestDto> dtoList) {
+        return ResponseEntity.ok(productService.addProducts(dtoList));
+    }
+
     @GetMapping
     public ResponseEntity<List<ProductResponseDto>> getAllProducts(){
         return ResponseEntity.ok(productService.getAllProducts());

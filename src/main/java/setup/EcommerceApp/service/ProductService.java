@@ -8,6 +8,7 @@ import setup.EcommerceApp.model.Product;
 import setup.EcommerceApp.repository.ProductRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -32,6 +33,14 @@ public class ProductService {
         product = productRepository.save(product);
         return toResponseDto(product);
     }
+    public List<ProductResponseDto> addProducts(List<ProductRequestDto> dtoList) {
+        List<ProductResponseDto> responseList = new ArrayList<>();
+        for (ProductRequestDto dto : dtoList) {
+            responseList.add(addProduct(dto)); // reuse existing method
+        }
+        return responseList;
+    }
+
     public List<ProductResponseDto> getAllProducts(){
         return productRepository.findAll()
                 .stream()
